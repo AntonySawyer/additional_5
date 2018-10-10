@@ -1,40 +1,35 @@
 module.exports = function check(str, bracketsConfig) {
 // check for even count of brackets (other way - one of brackets without couple)
-	if (str.length % 2 != 0) {
+	if (str.length % 2 !== 0) {
 		return false;
 	}
 
-	var check = [];
-	var openBrackets = [];
-	var closeBrackets = [];
-	for (var j = 0; j < bracketsConfig.length; j++) {
+	const check = [];
+	const openBrackets = [];
+	const closeBrackets = [];
+	for (let j = 0; j < bracketsConfig.length; j++) {
 		openBrackets.push(bracketsConfig[j][0]);
 		closeBrackets.push(bracketsConfig[j][1]);
 	}
 
-	for (var i = 0; i < str.length; i++) {
-		var open = openBrackets.includes(str[i]);
-		var close = closeBrackets.includes(str[i]);
+	for (let i = 0; i < str.length; i++) {
+		let current = str[i];
+		let open = openBrackets.includes(current);
+		let close = closeBrackets.includes(current);
+		let last = check[check.length - 1];
+
 		if (open) {
 			if (close) {
-				if (check[check.length - 1] == str[i]) {
-					check.pop();
-				} else {
-					check.push(str[i]);
-				}
+				last === current ? check.pop() : check.push(current);
 			} else {
-				check.push(str[i]);				
+				check.push(current);
 			}
-		} else if (close && check[check.length - 1] == openBrackets[closeBrackets.indexOf(str[i])]) {
-			check.pop();
-		} else {
-			return false;
 		}
+
+		close && last === openBrackets[closeBrackets.indexOf(current)] ? check.pop() : () => {return false};
+
 	}
 
-	if (check.length == 0) {
-		return true;
-	} else {
-		return false;
-	}
+	return check.length === 0;
+
 }
